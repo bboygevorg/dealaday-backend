@@ -5,6 +5,7 @@ const DealsProduct = require("../models/DealsProduct");
 const MostPopular = require("../models/MostPopular");
 const TopProducts = require("../models/TopProducts");
 const BannerProduct = require("../models/BannerProduct");
+const Recommended = require("../models/Recommended");
 const Banner = require("../models/Banner");
 
 router.get("/products", async (req, res) => {
@@ -97,6 +98,35 @@ router.get("/products/:id", async (req, res) => {
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");
+  }
+});
+
+// test Admin
+router.put("/product/:id", async (req, res) => {
+  try {
+    const productId = req.params.id;
+    const {
+      name_1,
+      description_1,
+      name_2,
+      description_2,
+      name_3,
+      description_3,
+    } = req.body;
+
+    const dynamicDescription = `<h3>${name_1}</h3><p>${description_1}<p><h3>${name_2}</h3><pre>${description_2}</pre><h3>${name_3}</h3><pre>${description_3}</pre>`;
+
+    const product = await Product.findById(productId);
+    if (!product) {
+      return res.status(404).json({ message: "Product not found" });
+    }
+
+    product.description = dynamicDescription;
+
+    await product.save();
+    res.status(200).json({ message: "Product updated successfully", product });
+  } catch (error) {
+    res.status(500).json({ message: "Internal Server Error" });
   }
 });
 
@@ -235,6 +265,52 @@ router.post("/topproducts", async (req, res) => {
 router.get("/topproducts", async (req, res) => {
   try {
     const product = await TopProducts.find();
+    res.send(product);
+  } catch (error) {
+    res.status(500).send("Something went wrong");
+  }
+});
+
+// test Admin
+router.post("/recommended", async (req, res) => {
+  try {
+    const { productId, name, title, img, price, price_previous, rating } =
+      req.body;
+
+    const recommended = new Recommended({
+      productId,
+      name,
+      title,
+      img,
+      price,
+      price_previous,
+      rating,
+    });
+
+    await recommended.save();
+
+    const recommendedCount = await Recommended.countDocuments();
+
+    if (recommendedCount > 7) {
+      const randomProduct = await Recommended.aggregate([
+        { $sample: { size: 1 } },
+      ]);
+      await Recommended.findByIdAndDelete(randomProduct[0]._id);
+      console.log("Removed random product:", randomProduct[0]);
+    }
+
+    res.json({
+      success: true,
+      message: "Product added to MostPopular collection.",
+    });
+  } catch (error) {
+    res.status(500).send("Something went wromg");
+  }
+});
+
+router.get("/recommended", async (req, res) => {
+  try {
+    const product = await Recommended.find();
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");

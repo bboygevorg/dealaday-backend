@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const productRoutes = require("./routes/product");
+const cartRoutes = require("./routes/cart");
 const connectToMongo = require("./config");
 
 dotenv.config();
@@ -15,6 +16,7 @@ app.use(cors());
 connectToMongo();
 
 app.use(productRoutes);
+app.use(cartRoutes);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
