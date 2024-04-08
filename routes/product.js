@@ -133,15 +133,10 @@ router.put("/product/:id", async (req, res) => {
 // test Admin
 router.post("/dealsproducts", async (req, res) => {
   try {
-    const { productId, name, img, price, price_previous, rating } = req.body;
+    const { _id } = req.body;
 
     const newDealsProduct = new DealsProduct({
-      productId,
-      name,
-      img,
-      price,
-      price_previous,
-      rating,
+      productId: _id,
     });
 
     await newDealsProduct.save();
@@ -171,7 +166,7 @@ router.post("/dealsproducts", async (req, res) => {
 
 router.get("/dealsproducts", async (req, res) => {
   try {
-    const product = await DealsProduct.find();
+    const product = await DealsProduct.find().populate("productId");
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -181,17 +176,10 @@ router.get("/dealsproducts", async (req, res) => {
 // test Admin
 router.post("/mostpopular", async (req, res) => {
   try {
-    const { productId, name, title, img, price, price_previous, rating } =
-      req.body;
+    const { _id } = req.body;
 
     const mostPopular = new MostPopular({
-      productId,
-      name,
-      title,
-      img,
-      price,
-      price_previous,
-      rating,
+      productId: _id,
     });
 
     await mostPopular.save();
@@ -218,7 +206,7 @@ router.post("/mostpopular", async (req, res) => {
 
 router.get("/mostpopular", async (req, res) => {
   try {
-    const product = await MostPopular.find();
+    const product = await MostPopular.find().populate("productId");
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -228,17 +216,10 @@ router.get("/mostpopular", async (req, res) => {
 // test Admin
 router.post("/topproducts", async (req, res) => {
   try {
-    const { productId, name, title, img, price, price_previous, rating } =
-      req.body;
+    const { _id } = req.body;
 
     const topProducts = new TopProducts({
-      productId,
-      name,
-      title,
-      img,
-      price,
-      price_previous,
-      rating,
+      productId: _id,
     });
 
     await topProducts.save();
@@ -264,7 +245,7 @@ router.post("/topproducts", async (req, res) => {
 
 router.get("/topproducts", async (req, res) => {
   try {
-    const product = await TopProducts.find();
+    const product = await TopProducts.find().populate("productId");
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -274,17 +255,10 @@ router.get("/topproducts", async (req, res) => {
 // test Admin
 router.post("/recommended", async (req, res) => {
   try {
-    const { productId, name, title, img, price, price_previous, rating } =
-      req.body;
+    const { _id } = req.body;
 
     const recommended = new Recommended({
-      productId,
-      name,
-      title,
-      img,
-      price,
-      price_previous,
-      rating,
+      productId: _id,
     });
 
     await recommended.save();
@@ -310,7 +284,7 @@ router.post("/recommended", async (req, res) => {
 
 router.get("/recommended", async (req, res) => {
   try {
-    const product = await Recommended.find();
+    const product = await Recommended.find().populate("productId");
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");
@@ -320,16 +294,10 @@ router.get("/recommended", async (req, res) => {
 // test Admin
 router.post("/bannerproduct", async (req, res) => {
   try {
-    const { productId, name, title, price, price_previous, bannerPicture } =
-      req.body;
+    const { _id } = req.body;
 
     const bannerProduct = new BannerProduct({
-      productId,
-      name,
-      title,
-      price,
-      price_previous,
-      bannerPicture,
+      productId: _id,
     });
 
     await bannerProduct.save();
@@ -355,7 +323,7 @@ router.post("/bannerproduct", async (req, res) => {
 
 router.get("/bannerproduct", async (req, res) => {
   try {
-    const product = await BannerProduct.find();
+    const product = await BannerProduct.find().populate("productId");
     res.send(product);
   } catch (error) {
     res.status(500).send("Something went wrong");

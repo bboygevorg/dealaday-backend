@@ -7,11 +7,6 @@ const DealsProductSchema = new Schema(
       type: mongoose.Schema.Types.ObjectId,
       ref: "product",
     },
-    name: String,
-    img: String,
-    price: Number,
-    price_previous: Number,
-    rating: Number,
   },
   { timestamps: true }
 );

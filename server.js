@@ -2,11 +2,13 @@ const express = require("express");
 const cors = require("cors");
 const dotenv = require("dotenv");
 const connectToMongo = require("./config");
+const path = require("path");
 
 const productRoutes = require("./routes/product");
 const cartRoutes = require("./routes/cart");
 const auth = require("./routes/auth");
 const forgotPassword = require("./routes/forgotPassword");
+const wishlist = require("./routes/wishlist");
 
 dotenv.config();
 
@@ -22,6 +24,7 @@ app.use("/product", productRoutes);
 app.use("/cart", cartRoutes);
 app.use("/user/auth", auth);
 app.use("/user/password", forgotPassword);
+app.use("/user/wishlist", wishlist);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
