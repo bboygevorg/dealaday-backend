@@ -36,9 +36,13 @@ router.delete("/deletewishlist/:id", authUser, async (req, res) => {
   const { id } = req.params;
 
   try {
-    const result = await Wishlist.findByIdAndDelete(id);
+    const result = await Wishlist.findOneAndDelete({ productId: id });
+    if (!result) {
+      return res.status(404).send("Wishlist item not found");
+    }
     res.send(result);
   } catch (error) {
+    console.error("Error deleting wishlist item:", error);
     res.status(500).send("Something went wrong");
   }
 });

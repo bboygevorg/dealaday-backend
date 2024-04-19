@@ -9,6 +9,7 @@ const cartRoutes = require("./routes/cart");
 const auth = require("./routes/auth");
 const forgotPassword = require("./routes/forgotPassword");
 const wishlist = require("./routes/wishlist");
+const review = require("./routes/review");
 
 dotenv.config();
 
@@ -25,6 +26,7 @@ app.use("/cart", cartRoutes);
 app.use("/user/auth", auth);
 app.use("/user/password", forgotPassword);
 app.use("/user/wishlist", wishlist);
+app.use("/user/review", review);
 
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}`);
