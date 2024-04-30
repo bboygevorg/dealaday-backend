@@ -121,6 +121,77 @@ router.put("/updateuser", authUser, async (req, res) => {
   }
 });
 
+// add Address
+router.post("/addAddress", authUser, async (req, res) => {
+  const { address } = req.body;
+  const userId = req.user.id;
+
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    if (user.address.includes(address)) {
+      return res.status(400).json({
+        success: false,
+        message: "Address already exists for the user",
+      });
+    }
+
+    user.address.push(address);
+
+    await user.save();
+
+    res
+      .status(200)
+      .json({ success: true, message: "Address added successfully" });
+  } catch (error) {
+    console.error("Error adding address:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+// delete Address
+router.post("/deleteaddress", authUser, async (req, res) => {
+  const { index } = req.body;
+  const userId = req.user.id;
+  try {
+    const user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(401).json({ message: "Unaouthorized" });
+    }
+
+    if (!user.address) {
+      return res.status(400).json({ message: "User address data is invalid" });
+    }
+
+    const adjustedIndex = index - 1;
+    success = true;
+
+    if (adjustedIndex >= 0 && adjustedIndex < user.address.length) {
+      const deletedAddress = user.address.splice(adjustedIndex, 1);
+      await user.save();
+      return res
+        .status(200)
+        .json({
+          success: true,
+          message: "Address removed successfully",
+          deletedAddress,
+        });
+    } else {
+      return res.status(400).json({ message: "Invalid address index" });
+    }
+  } catch (error) {
+    console.error("Error removing address:", error);
+    return res.status(500).json({ message: "Internal server error" });
+  }
+});
+
 // get user
 router.get("/getuser", authUser, async (req, res) => {
   try {

@@ -40,4 +40,37 @@ router.post("/addreview", authUser, async (req, res) => {
   }
 });
 
+router.put("/editreview", authUser, async (req, res) => {
+  const { _id, comment, rating } = req.body;
+
+  const review = await Review.findById(_id);
+
+  try {
+    if (review) {
+      let updateDetails = await Review.findByIdAndUpdate(_id, {
+        $set: { rating: rating, comment: comment },
+      });
+      success = true;
+      res.status(200).send({ success, msg: "Review edited successfully" });
+    } else {
+      return res.status(400).send({ success, error: "User Not Found" });
+    }
+  } catch (error) {
+    res.status("Something went wrong");
+  }
+});
+
+router.delete("/deletereview/:id", authUser, async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    let deleteReview = await Review.deleteOne({
+      $and: [{ user: req.user.id }, { _id: id }],
+    });
+    res.send({ msg: "Review deleted successfully" });
+  } catch (error) {
+    res.send({ msg: "Something went wrong,Please try again letter" });
+  }
+});
+
 module.exports = router;
