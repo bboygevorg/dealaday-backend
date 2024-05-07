@@ -155,6 +155,51 @@ router.post("/addAddress", authUser, async (req, res) => {
   }
 });
 
+// defaultAddress
+router.post("/defaultaddress", authUser, async (req, res) => {
+  const { name } = req.body;
+  const userId = req.user.id;
+  try {
+    const user = await User.findById(userId);
+
+    if (user.default === name) {
+      return res.status(400).json({
+        success: false,
+        message: "Address already exists for the user",
+      });
+    }
+
+    if (!user) {
+      return res
+        .status(404)
+        .json({ success: false, message: "User not found" });
+    }
+
+    user.default = name;
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: "Add default address successfully",
+      name,
+    });
+  } catch (error) {
+    console.error("Error adding address:", error);
+    res.status(500).json({ success: false, message: "Internal server error" });
+  }
+});
+
+// get defaultAddress
+router.get("/fetchdefadd", authUser, async (req, res) => {
+  try {
+    const user = await User.findById(req.user.id);
+    success = true;
+    res.send(user.default);
+  } catch (error) {
+    res.status(400).send("Something went wrong");
+  }
+});
+
 // delete Address
 router.post("/deleteaddress", authUser, async (req, res) => {
   const { index } = req.body;
@@ -176,13 +221,11 @@ router.post("/deleteaddress", authUser, async (req, res) => {
     if (adjustedIndex >= 0 && adjustedIndex < user.address.length) {
       const deletedAddress = user.address.splice(adjustedIndex, 1);
       await user.save();
-      return res
-        .status(200)
-        .json({
-          success: true,
-          message: "Address removed successfully",
-          deletedAddress,
-        });
+      return res.status(200).json({
+        success: true,
+        message: "Address removed successfully",
+        deletedAddress,
+      });
     } else {
       return res.status(400).json({ message: "Invalid address index" });
     }
